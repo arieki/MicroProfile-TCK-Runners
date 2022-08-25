@@ -72,10 +72,12 @@ public class ArquillianArchiveProcessor implements ApplicationArchiveProcessor {
             return;
         }
         WebArchive webArchive = WebArchive.class.cast(archive);
-        try {
-            webArchive.addAsLibraries(lib(HAMCREST_ALL));
-            webArchive.addAsLibraries(lib(JUNIT_DEP));
+        if (webArchive.contains("WEB-INF/beans.xml")) {
+            LOG.info("manipulate beans \n");
+            webArchive.delete("WEB-INF/beans.xml");
             webArchive.addAsWebInfResource("beans.xml", "beans.xml");
+        }
+        try {
             for(Map.Entry<ArchivePath, Node> content : archive.getContent().entrySet()) {
                 if (content.getValue().getAsset() instanceof ArchiveAsset) {
                     ArchiveAsset asset = (ArchiveAsset) content.getValue().getAsset();
@@ -89,6 +91,8 @@ public class ArquillianArchiveProcessor implements ApplicationArchiveProcessor {
                     }
                 }
             }
+            webArchive.addAsLibraries(lib(HAMCREST_ALL));
+            webArchive.addAsLibraries(lib(JUNIT_DEP));
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "process archive exception", e);
         }
