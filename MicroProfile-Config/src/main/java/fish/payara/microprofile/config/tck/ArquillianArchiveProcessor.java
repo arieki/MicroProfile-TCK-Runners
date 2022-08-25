@@ -72,27 +72,26 @@ public class ArquillianArchiveProcessor implements ApplicationArchiveProcessor {
             return;
         }
         WebArchive webArchive = WebArchive.class.cast(archive);
-        if (webArchive.contains("WEB-INF/beans.xml")) {
-            LOG.info("manipulate beans \n");
-            webArchive.delete("WEB-INF/beans.xml");
-            webArchive.addAsWebInfResource("beans.xml", "beans.xml");
-        }
         try {
+            webArchive.addAsLibraries(lib(HAMCREST_ALL));
+            webArchive.addAsLibraries(lib(JUNIT_DEP));
+
             for(Map.Entry<ArchivePath, Node> content : archive.getContent().entrySet()) {
                 if (content.getValue().getAsset() instanceof ArchiveAsset) {
                     ArchiveAsset asset = (ArchiveAsset) content.getValue().getAsset();
-                    for(Map.Entry<ArchivePath, Node> contentArchive : asset.getArchive().getContent().entrySet()) {
-                        if(contentArchive.getKey().get().contains("META-INF/beans.xml")) {
-                            LOG.log(Level.INFO, "Virtually augmented content archive \n");
-                            JavaArchive javaArchive = JavaArchive.class.cast(asset.getArchive());
-                            javaArchive.delete(contentArchive.getKey());
-                            javaArchive.addAsManifestResource("beans.xml", "beans.xml");
-                        }
+                    if (asset.getArchive().contains("META-INF/beans.xml")) {
+                        LOG.log(Level.INFO, "Virtually augmented content archive \n");
+                        JavaArchive javaArchive = JavaArchive.class.cast(asset.getArchive());
+                        javaArchive.addAsManifestResource("beans.xml");
+
                     }
                 }
             }
-            webArchive.addAsLibraries(lib(HAMCREST_ALL));
-            webArchive.addAsLibraries(lib(JUNIT_DEP));
+
+            if (webArchive.contains("WEB-INF/beans.xml")) {
+                LOG.info("manipulate beans \n");
+                webArchive.addAsWebInfResource("beans.xml");
+            }
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "process archive exception", e);
         }
