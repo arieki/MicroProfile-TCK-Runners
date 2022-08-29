@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package fish.payara.microprofile.config.tck;
+package fish.payara.mptck;
 
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.core.spi.LoadableExtension;
@@ -52,7 +52,8 @@ public class ArquillianExtension implements LoadableExtension {
     @Override
     public void register(ExtensionBuilder extensionBuilder) {
         LOG.log(Level.INFO, "\n Registered Payara TCK ArquillianExtension \n");
-        extensionBuilder.service(ApplicationArchiveProcessor.class, ArquillianArchiveProcessor.class);
+        extensionBuilder.service(ApplicationArchiveProcessor.class, ArquillianArchiveProcessor.class)
+                .observer(LifecycleExecutor.class);
     }
 
 }

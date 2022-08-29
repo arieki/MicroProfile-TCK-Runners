@@ -1,7 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="microprofile-config-TCK" verbose="2" configfailurepolicy="continue" >
-
     <test name="Setup">
         <classes>
             <class name="fish.payara.mptck.setup.SetupIT"/>
@@ -13,6 +12,11 @@
                 <exclude name="org.eclipse.microprofile.config.tck.broken"/>
             </package>
         </packages>
+        
+<!--        <classes>-->
+<!--            <class name="org.eclipse.microprofile.config.tck.converters.convertToNull.ConvertedNullValueBrokenInjectionTest" />-->
+<!--            <class name="org.eclipse.microprofile.config.tck.converters.convertToNull.ConvertedNullValueTest" />-->
+<!--        </classes>-->
     </test>
 
 </suite>
